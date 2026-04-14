@@ -296,6 +296,7 @@ const zeroEntropyAdapter: MemoryEmbeddingProviderAdapter = {
   id: "zeroentropy",
   defaultModel: DEFAULT_ZEROENTROPY_EMBEDDING_MODEL,
   transport: "remote",
+  // Auto-select after established providers (local=10, openai=20, gemini=30, voyage=40, mistral=50).
   autoSelectPriority: 55,
   allowExplicitWhenConfiguredAuto: true,
   shouldContinueAutoSelection: isMissingApiKeyError,
