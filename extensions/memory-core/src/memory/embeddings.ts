@@ -5,6 +5,7 @@ import {
   DEFAULT_OLLAMA_EMBEDDING_MODEL,
   DEFAULT_OPENAI_EMBEDDING_MODEL,
   DEFAULT_VOYAGE_EMBEDDING_MODEL,
+  DEFAULT_ZEROENTROPY_EMBEDDING_MODEL,
   getMemoryEmbeddingProvider,
   listMemoryEmbeddingProviders,
   type MemoryEmbeddingProvider,
@@ -23,6 +24,7 @@ export {
   DEFAULT_OLLAMA_EMBEDDING_MODEL,
   DEFAULT_OPENAI_EMBEDDING_MODEL,
   DEFAULT_VOYAGE_EMBEDDING_MODEL,
+  DEFAULT_ZEROENTROPY_EMBEDDING_MODEL,
 } from "openclaw/plugin-sdk/memory-core-host-engine-embeddings";
 
 export type EmbeddingProvider = MemoryEmbeddingProvider;

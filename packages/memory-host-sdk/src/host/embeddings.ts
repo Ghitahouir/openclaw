@@ -27,6 +27,10 @@ import {
 import { createOllamaEmbeddingProvider, type OllamaEmbeddingClient } from "./embeddings-ollama.js";
 import { createOpenAiEmbeddingProvider, type OpenAiEmbeddingClient } from "./embeddings-openai.js";
 import { createVoyageEmbeddingProvider, type VoyageEmbeddingClient } from "./embeddings-voyage.js";
+import {
+  createZeroEntropyEmbeddingProvider,
+  type ZeroEntropyEmbeddingClient,
+} from "./embeddings-zeroentropy.js";
 import { importNodeLlamaCpp } from "./node-llama.js";
 
 export type { GeminiEmbeddingClient } from "./embeddings-gemini.js";
@@ -36,6 +40,7 @@ export type { OpenAiEmbeddingClient } from "./embeddings-openai.js";
 export type { VoyageEmbeddingClient } from "./embeddings-voyage.js";
 export type { OllamaEmbeddingClient } from "./embeddings-ollama.js";
 export type { BedrockEmbeddingClient } from "./embeddings-bedrock.js";
+export type { ZeroEntropyEmbeddingClient } from "./embeddings-zeroentropy.js";
 
 export type EmbeddingProvider = {
   id: string;
@@ -54,7 +59,8 @@ export type EmbeddingProviderId =
   | "mistral"
   | "bedrock"
   | "lmstudio"
-  | "ollama";
+  | "ollama"
+  | "zeroentropy";
 export type EmbeddingProviderRequest = EmbeddingProviderId | "auto";
 export type EmbeddingProviderFallback = EmbeddingProviderId | "none";
 
@@ -62,7 +68,7 @@ export type EmbeddingProviderFallback = EmbeddingProviderId | "none";
 // LM Studio and Ollama are intentionally excluded here so that "auto" mode does not
 // implicitly assume either instance is available.
 // Bedrock is handled separately when AWS credentials are detected.
-const REMOTE_EMBEDDING_PROVIDER_IDS = ["openai", "gemini", "voyage", "mistral"] as const;
+const REMOTE_EMBEDDING_PROVIDER_IDS = ["openai", "gemini", "voyage", "mistral", "zeroentropy"] as const;
 
 export type EmbeddingProviderResult = {
   provider: EmbeddingProvider | null;
@@ -77,6 +83,7 @@ export type EmbeddingProviderResult = {
   bedrock?: BedrockEmbeddingClient;
   lmstudio?: LmstudioEmbeddingClient;
   ollama?: OllamaEmbeddingClient;
+  zeroentropy?: ZeroEntropyEmbeddingClient;
 };
 
 export type EmbeddingProviderOptions = {
@@ -221,6 +228,10 @@ export async function createEmbeddingProvider(
     if (id === "bedrock") {
       const { provider, client } = await createBedrockEmbeddingProvider(options);
       return { provider, bedrock: client };
+    }
+    if (id === "zeroentropy") {
+      const { provider, client } = await createZeroEntropyEmbeddingProvider(options);
+      return { provider, zeroentropy: client };
     }
     const { provider, client } = await createOpenAiEmbeddingProvider(options);
     return { provider, openAi: client };

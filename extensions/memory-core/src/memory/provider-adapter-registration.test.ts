@@ -10,6 +10,7 @@ describe("filterUnregisteredMemoryEmbeddingProviderAdapters", () => {
         { id: "gemini" },
         { id: "voyage" },
         { id: "mistral" },
+        { id: "zeroentropy" },
       ],
       registeredAdapters: [],
     });
@@ -20,6 +21,7 @@ describe("filterUnregisteredMemoryEmbeddingProviderAdapters", () => {
       "gemini",
       "voyage",
       "mistral",
+      "zeroentropy",
     ]);
   });
 
@@ -31,10 +33,16 @@ describe("filterUnregisteredMemoryEmbeddingProviderAdapters", () => {
         { id: "gemini" },
         { id: "voyage" },
         { id: "mistral" },
+        { id: "zeroentropy" },
       ],
       registeredAdapters: [{ id: "local" }, { id: "gemini" }],
     });
 
-    expect(adapters.map((adapter) => adapter.id)).toEqual(["openai", "voyage", "mistral"]);
+    expect(adapters.map((adapter) => adapter.id)).toEqual([
+      "openai",
+      "voyage",
+      "mistral",
+      "zeroentropy",
+    ]);
   });
 });

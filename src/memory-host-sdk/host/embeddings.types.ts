@@ -19,7 +19,8 @@ export type EmbeddingProviderId =
   | "mistral"
   | "lmstudio"
   | "ollama"
-  | "bedrock";
+  | "bedrock"
+  | "zeroentropy";
 
 export type EmbeddingProviderRequest = EmbeddingProviderId | "auto";
 export type EmbeddingProviderFallback = EmbeddingProviderId | "none";
