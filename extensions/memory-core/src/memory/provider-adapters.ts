@@ -6,6 +6,7 @@ import {
   DEFAULT_MISTRAL_EMBEDDING_MODEL,
   DEFAULT_OPENAI_EMBEDDING_MODEL,
   DEFAULT_VOYAGE_EMBEDDING_MODEL,
+  DEFAULT_ZEROENTROPY_EMBEDDING_MODEL,
   OPENAI_BATCH_ENDPOINT,
   buildGeminiEmbeddingRequest,
   createGeminiEmbeddingProvider,
@@ -14,6 +15,7 @@ import {
   createMistralEmbeddingProvider,
   createOpenAiEmbeddingProvider,
   createVoyageEmbeddingProvider,
+  createZeroEntropyEmbeddingProvider,
   hasNonTextEmbeddingParts,
   listRegisteredMemoryEmbeddingProviderAdapters,
   runGeminiEmbeddingBatches,
@@ -85,7 +87,7 @@ function formatLocalSetupError(err: unknown): string {
       ? "2) Reinstall OpenClaw (this should install node-llama-cpp): npm i -g openclaw@latest"
       : null,
     "3) If you use pnpm: pnpm approve-builds (select node-llama-cpp), then pnpm rebuild node-llama-cpp",
-    ...["openai", "gemini", "voyage", "mistral"].map(
+    ...["openai", "gemini", "voyage", "mistral", "zeroentropy"].map(
       (provider) => `Or set agents.defaults.memorySearch.provider = "${provider}" (remote).`,
     ),
   ]
@@ -290,6 +292,34 @@ const mistralAdapter: MemoryEmbeddingProviderAdapter = {
   },
 };
 
+const zeroEntropyAdapter: MemoryEmbeddingProviderAdapter = {
+  id: "zeroentropy",
+  defaultModel: DEFAULT_ZEROENTROPY_EMBEDDING_MODEL,
+  transport: "remote",
+  autoSelectPriority: 55,
+  allowExplicitWhenConfiguredAuto: true,
+  shouldContinueAutoSelection: isMissingApiKeyError,
+  create: async (options) => {
+    const { provider, client } = await createZeroEntropyEmbeddingProvider({
+      ...options,
+      provider: "zeroentropy",
+      fallback: "none",
+    });
+    return {
+      provider,
+      runtime: {
+        id: "zeroentropy",
+        cacheKeyData: {
+          provider: "zeroentropy",
+          baseUrl: client.baseUrl,
+          model: client.model,
+          headers: sanitizeHeaders(client.headers, ["authorization"]),
+        },
+      },
+    };
+  },
+};
+
 const lmstudioAdapter: MemoryEmbeddingProviderAdapter = {
   id: "lmstudio",
   defaultModel: DEFAULT_LMSTUDIO_EMBEDDING_MODEL,
@@ -347,6 +377,7 @@ export const builtinMemoryEmbeddingProviderAdapters = [
   geminiAdapter,
   voyageAdapter,
   mistralAdapter,
+  zeroEntropyAdapter,
   lmstudioAdapter,
 ] as const;
 
@@ -411,6 +442,7 @@ export {
   DEFAULT_MISTRAL_EMBEDDING_MODEL,
   DEFAULT_OPENAI_EMBEDDING_MODEL,
   DEFAULT_VOYAGE_EMBEDDING_MODEL,
+  DEFAULT_ZEROENTROPY_EMBEDDING_MODEL,
   canAutoSelectLocal,
   formatLocalSetupError,
   isMissingApiKeyError,

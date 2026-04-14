@@ -43,6 +43,10 @@ export {
   createVoyageEmbeddingProvider,
   DEFAULT_VOYAGE_EMBEDDING_MODEL,
 } from "./host/embeddings-voyage.js";
+export {
+  createZeroEntropyEmbeddingProvider,
+  DEFAULT_ZEROENTROPY_EMBEDDING_MODEL,
+} from "./host/embeddings-zeroentropy.js";
 export { runGeminiEmbeddingBatches, type GeminiBatchRequest } from "./host/batch-gemini.js";
 export {
   OPENAI_BATCH_ENDPOINT,
